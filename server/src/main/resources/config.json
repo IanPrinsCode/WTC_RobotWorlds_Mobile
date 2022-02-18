@@ -1,0 +1,11 @@
+{
+  "visibility":10,
+  "reload":3,
+  "repair":3,
+  "mine":3,
+  "shields":6,
+  "size":1,
+  "obstacles":"None",
+  "port":5000,
+  "apiport":5001
+}

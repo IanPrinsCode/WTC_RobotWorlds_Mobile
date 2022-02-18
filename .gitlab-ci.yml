@@ -1,0 +1,58 @@
+
+stages:          # List of stages for jobs, and their order of execution
+  - build
+  - test
+  - deploy
+
+build-server-image:
+  stage: build
+  image: maven:3.8.2-jdk-11-slim
+  before_script:
+    - apt-get update && apt-get install -y make
+    - apt install build-essential -y --no-install-recommends
+  script:
+    - make build_server
+
+build-client-app:
+  stage: build
+  image: cirrusci/flutter:latest
+  before_script:
+    - make init_flutter
+  script:
+    - make build_client
+
+server-unit-test-job:
+  stage: test
+  image: maven:3.8.2-jdk-11-slim    # It only starts when the job in the build stage completes successfully
+  before_script:
+    - apt-get update && apt-get install -y make
+    - apt install build-essential -y --no-install-recommends
+  script:
+    - make build_server
+    - make package
+    - echo "Running unit tests..."
+    - make test
+    - sleep 5
+    - echo "Tests completed."
+
+client-unit-test-job:
+  stage: test
+  image: cirrusci/flutter:latest
+  before_script:
+    - make init_flutter
+  script:
+    - make flutter_test
+
+deploy-job:      # This job runs in the deploy stage.
+   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully
+   script:
+     - echo "Deploying application..."
+     - echo "Application successfully deployed."
+
+
+# lint-test-job:   # This job also runs in the test stage.
+#   stage: test    # It can run at the same time as unit-test-job (in parallel).
+#   script:
+#     - echo "Linting code... This will take about 10 seconds."
+#     - sleep 10
+#     - echo "No lint issues found."

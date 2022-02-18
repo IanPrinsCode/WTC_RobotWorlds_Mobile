@@ -1,0 +1,31 @@
+// This is a basic Flutter widget test.
+//
+// To perform an interaction with a widget in your test, use the WidgetTester
+// utility that Flutter provides. For example, you can send tap and scroll
+// gestures. You can also use WidgetTester to find child widgets in the widget
+// tree, read text, and verify that the values of widget properties are correct.
+
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile_client/main.dart';
+
+void main() {
+  testWidgets('Test Config Portal', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(const MyApp());
+    //Find the Config Portal button
+    expect(find.text('OK'), findsOneWidget);
+
+    //Verify that the Text Field is empty
+    expect(find.widgetWithText(TextField, 'localhost'), findsNothing);
+    expect(find.widgetWithText(TextField, '5001'), findsNothing);
+    // // Tap the 'OK' icon and trigger a frame.
+    await tester.tap(find.text('OK'));
+    await tester.pump();
+    //
+    // // Verify that text controller gets default values.
+    expect(find.widgetWithText(TextField, 'localhost'), findsWidgets);
+    expect(find.widgetWithText(TextField, '5001'), findsWidgets);
+    // expect(find.text('ADMINISTRATION'), findsOneWidget);
+  });
+}
